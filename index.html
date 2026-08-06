@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C&W Segurança | Vigilância patrimonial e monitoramento</title>
+<meta name="description" content="C&W Segurança — vigilância patrimonial, portaria, monitoramento e segurança eletrônica para empresas, condomínios e indústrias.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void:#070b14;
+    --bg-panel:#101a2c;
+    --bg-panel-2:#0c1420;
+    --gold:#c9a24b;
+    --gold-bright:#e8c468;
+    --steel:#5b7a94;
+    --ink:#edeff2;
+    --mist:#94a0b5;
+    --line: rgba(201,162,75,0.18);
+    --line-soft: rgba(237,239,242,0.08);
+    --maxw: 1180px;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg-void);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  h1,h2,h3{ font-family:'Oswald',sans-serif; margin:0; letter-spacing:0.01em; }
+  p{ margin:0; }
+  ul{ margin:0; padding:0; list-style:none; }
+  button{ font-family:inherit; }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 28px; }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+  .section-head{ max-width:640px; margin-bottom:44px; }
+  .section-head .eyebrow{ margin-bottom:12px; display:block; }
+  .section-head h2{ font-size:clamp(1.7rem,3vw,2.4rem); color:var(--ink); }
+  .section-head p{ margin-top:14px; color:var(--mist); font-size:1rem; }
+
+  /* badge / credential notch — recurring motif: one corner chamfered like an ID badge or plaque */
+  .notch{
+    clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+  }
+
+  /* ---------- work-in-progress ribbon (remove this block before publishing) ---------- */
+  .wip-bar{
+    background:var(--gold);
+    color:#20160a;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    text-align:center;
+    padding:8px 12px;
+    letter-spacing:0.03em;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(7,11,20,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 0;
+  }
+  .logo{
+    font-family:'Oswald',sans-serif;
+    font-size:1.3rem;
+    font-weight:600;
+    letter-spacing:0.03em;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .logo-mark{
+    width:34px; height:34px;
+    border:1.5px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    color:var(--gold);
+    font-size:0.85rem;
+    font-weight:700;
+  }
+  .nav-links{
+    display:flex; align-items:center; gap:36px;
+  }
+  .nav-links a{
+    font-size:0.88rem;
+    font-weight:500;
+    color:var(--mist);
+    transition:color .2s ease;
+  }
+  .nav-links a:hover{ color:var(--ink); }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:0.85rem; font-weight:600;
+    padding:12px 22px;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:transform .15s ease, background .2s ease, border-color .2s ease;
+  }
+  .btn-gold{
+    background:var(--gold);
+    color:#20160a;
+  }
+  .btn-gold:hover{ background:var(--gold-bright); transform:translateY(-1px); }
+  .btn-ghost{
+    border-color:var(--line-soft);
+    color:var(--ink);
+    background:transparent;
+  }
+  .btn-ghost:hover{ border-color:var(--gold); color:var(--gold); }
+  .nav-cta{ display:flex; align-items:center; gap:14px; }
+
+  .nav-toggle{
+    display:none;
+    background:none; border:none; color:var(--ink);
+    width:32px; height:24px; position:relative; cursor:pointer;
+  }
+  .nav-toggle span, .nav-toggle span::before, .nav-toggle span::after{
+    content:''; position:absolute; left:0; width:100%; height:2px; background:var(--ink);
+  }
+  .nav-toggle span{ top:11px; }
+  .nav-toggle span::before{ top:-8px; }
+  .nav-toggle span::after{ top:8px; }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    padding:96px 0 80px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .hero::before{
+    /* signature: slow radar sweep, evokes perimeter monitoring */
+    content:'';
+    position:absolute;
+    top:50%; left:78%;
+    width:1400px; height:1400px;
+    transform:translate(-50%,-50%);
+    background:conic-gradient(from 0deg, rgba(201,162,75,0.16), transparent 18%, transparent 100%);
+    animation: sweep 9s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes sweep{ to{ transform:translate(-50%,-50%) rotate(360deg); } }
+  .hero-grid{
+    position:relative;
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:56px;
+    align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem,4.4vw,3.4rem);
+    line-height:1.1;
+    color:var(--ink);
+    margin:16px 0 22px;
+  }
+  .hero h1 em{ color:var(--gold); font-style:normal; }
+  .hero p.lede{
+    color:var(--mist);
+    font-size:1.05rem;
+    max-width:520px;
+    margin-bottom:34px;
+  }
+  .hero-ctas{ display:flex; gap:14px; flex-wrap:wrap; }
+
+  .hero-visual{
+    position:relative;
+    aspect-ratio:4/5;
+    background:
+      repeating-linear-gradient(135deg, rgba(201,162,75,0.06) 0 2px, transparent 2px 14px),
+      linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    padding:24px;
+  }
+  .ph-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    color:var(--gold);
+    letter-spacing:0.04em;
+  }
+  .ph-sub{ font-size:0.78rem; color:var(--mist); margin-top:6px; }
+
+  /* ---------- stats / badges ---------- */
+  .stats{
+    padding:56px 0;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--line-soft);
+    border:1px solid var(--line-soft);
+  }
+  .stat{
+    background:var(--bg-void);
+    padding:26px 20px;
+    text-align:center;
+  }
+  .stat b{
+    display:block;
+    font-family:'Oswald',sans-serif;
+    font-size:2rem;
+    color:var(--gold);
+  }
+  .stat span{
+    display:block;
+    margin-top:6px;
+    font-size:0.82rem;
+    color:var(--mist);
+  }
+
+  /* ---------- services ---------- */
+  section{ padding:96px 0; }
+  .services-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line-soft);
+    border:1px solid var(--line-soft);
+  }
+  .card{
+    background:var(--bg-panel-2);
+    padding:32px 28px;
+  }
+  .card-icon{
+    width:40px; height:40px;
+    color:var(--gold);
+    margin-bottom:18px;
+  }
+  .card h3{
+    font-size:1.08rem;
+    color:var(--ink);
+    margin-bottom:10px;
+    font-weight:600;
+    font-family:'Inter',sans-serif;
+  }
+  .card p{ color:var(--mist); font-size:0.92rem; }
+
+  /* ---------- about ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:64px;
+    align-items:center;
+  }
+  .about-photo{
+    aspect-ratio:1/1;
+    background:linear-gradient(160deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:24px;
+  }
+  .about-text p{ color:var(--mist); margin-bottom:16px; font-size:1rem; }
+  .about-text p:last-child{ margin-bottom:0; }
+
+  /* ---------- differentiators ---------- */
+  .diff-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:32px 40px;
+  }
+  .diff-item{ display:flex; gap:16px; align-items:flex-start; }
+  .diff-icon{
+    width:22px; height:22px; flex:none; margin-top:2px; color:var(--gold);
+  }
+  .diff-item h4{
+    font-family:'Inter',sans-serif; font-size:0.98rem; font-weight:600; color:var(--ink); margin-bottom:4px;
+  }
+  .diff-item p{ color:var(--mist); font-size:0.88rem; }
+
+  /* ---------- contact ---------- */
+  .contact{ background:var(--bg-panel-2); border-top:1px solid var(--line-soft); }
+  .contact-grid{
+    display:grid;
+    grid-template-columns:0.9fr 1.1fr;
+    gap:64px;
+  }
+  .contact-info li{
+    display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--line-soft);
+    font-size:0.95rem; color:var(--mist);
+  }
+  .contact-info li b{ color:var(--ink); display:block; font-weight:600; margin-bottom:2px; }
+  .contact-info li svg{ width:20px; height:20px; flex:none; color:var(--gold); margin-top:2px; }
+
+  form{ display:grid; gap:16px; }
+  .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  label{ font-size:0.8rem; color:var(--mist); margin-bottom:6px; display:block; }
+  input, textarea{
+    width:100%;
+    background:var(--bg-void);
+    border:1px solid var(--line-soft);
+    color:var(--ink);
+    padding:12px 14px;
+    font-family:'Inter',sans-serif;
+    font-size:0.95rem;
+  }
+  input:focus, textarea:focus{ outline:2px solid var(--gold); outline-offset:1px; }
+  textarea{ resize:vertical; min-height:110px; }
+
+  /* ---------- footer ---------- */
+  footer{ padding:52px 0 36px; border-top:1px solid var(--line-soft); }
+  .footer-grid{
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:24px;
+    margin-bottom:32px;
+  }
+  .footer-links{ display:flex; gap:28px; flex-wrap:wrap; }
+  .footer-links a{ font-size:0.85rem; color:var(--mist); }
+  .footer-links a:hover{ color:var(--gold); }
+  .footer-bottom{
+    font-size:0.78rem; color:var(--mist);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+    padding-top:24px; border-top:1px solid var(--line-soft);
+  }
+
+  /* ---------- whatsapp float ---------- */
+  .wa-float{
+    position:fixed; right:24px; bottom:24px; z-index:60;
+    width:56px; height:56px;
+    background:#25D366;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 20px rgba(0,0,0,0.4);
+    color:#fff;
+  }
+  .wa-float svg{ width:28px; height:28px; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-visual{ aspect-ratio:16/9; }
+    .stats-grid{ grid-template-columns:repeat(2,1fr); }
+    .services-grid{ grid-template-columns:repeat(2,1fr); }
+    .about-grid{ grid-template-columns:1fr; }
+    .diff-grid{ grid-template-columns:repeat(2,1fr); }
+    .contact-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width:640px){
+    .wrap{ padding:0 20px; }
+    .nav-links, .nav-cta .btn-ghost{ display:none; }
+    .nav-toggle{ display:block; }
+    .nav.open .nav-links{
+      display:flex; position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; background:var(--bg-void); padding:20px 20px 28px;
+      border-bottom:1px solid var(--line-soft); gap:18px;
+    }
+    section{ padding:64px 0; }
+    .services-grid, .diff-grid{ grid-template-columns:1fr; }
+    .stats-grid{ grid-template-columns:1fr 1fr; }
+    .form-row{ grid-template-columns:1fr; }
+    .hero{ padding:64px 0 56px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{ scroll-behavior:auto; }
+    .hero::before{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TODO: remover esta faixa antes de publicar -->
+<div class="wip-bar">VERSÃO DE TRABALHO — textos, fotos e números de exemplo. Não publicar assim.</div>
+
+<header>
+  <nav class="nav wrap" id="nav">
+    <a href="#home" class="logo">
+      <span class="logo-mark">CW</span>
+      <!-- TODO: trocar por logo real do cliente (svg/png) -->
+      C&amp;W SEGURANÇA
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#servicos">Serviços</a></li>
+      <li><a href="#sobre">Quem somos</a></li>
+      <li><a href="#diferenciais">Diferenciais</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#contato" class="btn btn-ghost">Enviar currículo</a>
+      <a href="https://wa.me/5500000000000" class="btn btn-gold notch">Solicitar orçamento</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu"><span></span></button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="home">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Vigilância patrimonial · Portaria · Monitoramento 24h</span>
+        <h1>Segurança que sua empresa pode <em>confiar</em>, todos os dias do ano.</h1>
+        <!-- TODO: confirmar headline e proposta de valor com o cliente -->
+        <p class="lede">A C&amp;W Segurança protege empresas, condomínios e indústrias com equipe treinada, processos rigorosos e monitoramento contínuo — para você focar no que importa.</p>
+        <div class="hero-ctas">
+          <a href="https://wa.me/5500000000000" class="btn btn-gold notch">Solicitar proposta comercial</a>
+          <a href="#contato" class="btn btn-ghost">Enviar currículo</a>
+        </div>
+      </div>
+      <div class="hero-visual notch">
+        <div>
+          <div class="ph-label">FOTO — equipe C&amp;W em campo</div>
+          <div class="ph-sub">substituir por imagem real (retrato ou ação), formato vertical</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STATS ================= -->
+  <section class="stats">
+    <div class="wrap">
+      <div class="stats-grid">
+        <div class="stat"><b>[X] anos</b><span>de atuação no mercado</span></div>
+        <div class="stat"><b>[X]+</b><span>clientes atendidos</span></div>
+        <div class="stat"><b>[X]+</b><span>colaboradores treinados</span></div>
+        <div class="stat"><b>24h</b><span>monitoramento ativo</span></div>
+        <!-- TODO: substituir números reais fornecidos pelo cliente -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SERVIÇOS ================= -->
+  <section id="servicos">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">O que fazemos</span>
+        <h2>Soluções completas de segurança</h2>
+        <p>Lista de serviços de exemplo — confirmar com o cliente quais realmente são oferecidos antes da versão final.</p>
+      </div>
+      <div class="services-grid">
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>
+          <h3>Vigilância patrimonial</h3>
+          <p>Postos fixos e rondas programadas para proteger seu patrimônio contra invasões e furtos.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="7" width="18" height="13" rx="1"/><path d="M8 7V5a4 4 0 018 0v2"/></svg>
+          <h3>Portaria e controle de acesso</h3>
+          <p>Recepção, controle de entrada e saída de pessoas e veículos com registro completo.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/></svg>
+          <h3>Monitoramento eletrônico</h3>
+          <p>Câmeras e centrais de alarme monitoradas em tempo integral, com resposta rápida.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 12h16M4 6h16M4 18h10"/></svg>
+          <h3>Segurança eletrônica</h3>
+          <p>Instalação e manutenção de CFTV, alarmes e cercas elétricas para todo tipo de imóvel.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2v20M4 6h16M4 18h16"/></svg>
+          <h3>Escolta e transporte de valores</h3>
+          <p>Acompanhamento seguro de valores e cargas sensíveis com equipe especializada.</p>
+        </div>
+        <div class="card">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 11l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+          <h3>Consultoria em segurança</h3>
+          <p>Diagnóstico de riscos e plano de segurança sob medida para cada operação.</p>
+        </div>
+        <!-- TODO: remover ou trocar cards conforme os serviços reais da C&W -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUEM SOMOS ================= -->
+  <section id="sobre">
+    <div class="wrap about-grid">
+      <div class="about-photo notch">
+        <div>
+          <div class="ph-label">FOTO — sede ou equipe</div>
+          <div class="ph-sub">substituir por imagem real, formato quadrado</div>
+        </div>
+      </div>
+      <div class="about-text">
+        <div class="section-head" style="margin-bottom:22px;">
+          <span class="eyebrow">Quem somos</span>
+          <h2>Comprometidos com a segurança de quem confia na gente</h2>
+        </div>
+        <p>A C&amp;W Segurança nasceu do compromisso de oferecer soluções completas de proteção patrimonial, unindo equipe treinada, processos rigorosos e tecnologia de monitoramento. [TODO: substituir por história real da empresa — fundação, missão, região de atuação.]</p>
+        <p>Atendemos empresas, condomínios e indústrias que não podem correr riscos com a segurança do seu patrimônio, das suas pessoas e das suas operações. [TODO: confirmar segmento de clientes e diferenciais reais.]</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DIFERENCIAIS ================= -->
+  <section id="diferenciais">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Por que a C&amp;W</span>
+        <h2>Diferenciais que fazem a diferença</h2>
+      </div>
+      <div class="diff-grid">
+        <div class="diff-item">
+          <svg class="diff-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+          <div><h4>Equipe treinada e uniformizada</h4><p>Seleção rigorosa e capacitação contínua.</p></div>
+        </div>
+        <div class="diff-item">
+          <svg class="diff-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <div><h4>Atendimento 24 horas</h4><p>Suporte e resposta a qualquer hora, todos os dias.</p></div>
+        </div>
+        <div class="diff-item">
+          <svg class="diff-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h16M4 6h16M4 18h16"/></svg>
+          <div><h4>Contratos flexíveis</h4><p>Planos sob medida para o porte da sua operação.</p></div>
+        </div>
+        <div class="diff-item">
+          <svg class="diff-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+          <div><h4>Supervisão constante</h4><p>Acompanhamento ativo de todos os postos.</p></div>
+        </div>
+        <div class="diff-item">
+          <svg class="diff-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 9h16"/></svg>
+          <div><h4>Tecnologia de monitoramento</h4><p>Câmeras, alarmes e centrais integradas.</p></div>
+        </div>
+        <div class="diff-item">
+          <svg class="diff-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>
+          <div><h4>Conformidade legal</h4><p>Operação alinhada às normas do setor.</p></div>
+        </div>
+        <!-- TODO: confirmar diferenciais reais com o cliente -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTATO ================= -->
+  <section class="contact" id="contato">
+    <div class="wrap contact-grid">
+      <div>
+        <div class="section-head" style="margin-bottom:26px;">
+          <span class="eyebrow">Fale com a gente</span>
+          <h2>Peça sua proposta comercial</h2>
+        </div>
+        <ul class="contact-info">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div><b>Endereço</b>[TODO: endereço completo]</div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.4 2.1L8 9.9a16 16 0 006 6l1.4-1.4a2 2 0 012.1-.4c.9.3 1.8.5 2.7.6a2 2 0 011.8 2z"/></svg>
+            <div><b>Telefone / WhatsApp</b>[TODO: (xx) xxxxx-xxxx]</div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/></svg>
+            <div><b>E-mail</b>[TODO: contato@cwseguranca.com.br]</div>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            <div><b>Atendimento</b>24 horas, todos os dias</div>
+          </li>
+        </ul>
+      </div>
+      <form onsubmit="event.preventDefault(); alert('Formulário de exemplo — conectar a um serviço de envio (Formspree, EmailJS etc.) antes de publicar.');">
+        <div class="form-row">
+          <div><label for="nome">Nome</label><input id="nome" required></div>
+          <div><label for="tel">Telefone</label><input id="tel" required></div>
+        </div>
+        <div><label for="email">E-mail</label><input id="email" type="email" required></div>
+        <div><label for="msg">Mensagem</label><textarea id="msg" placeholder="Conte um pouco sobre a sua necessidade de segurança"></textarea></div>
+        <button type="submit" class="btn btn-gold notch" style="justify-self:start;">Enviar mensagem</button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <a href="#home" class="logo">
+        <span class="logo-mark">CW</span>
+        C&amp;W SEGURANÇA
+      </a>
+      <ul class="footer-links">
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#sobre">Quem somos</a></li>
+        <li><a href="#diferenciais">Diferenciais</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 C&amp;W Segurança. Todos os direitos reservados.</span>
+      <span>[TODO: nº de registro/licença, se exigido pela legislação do setor]</span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/5500000000000" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.6 14.3c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9 0-1.4.7-2 .9-2.3.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .5.4.2.5.7 1.7.7 1.8.1.2.1.3 0 .5-.1.2-.1.3-.3.5l-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1.2.1 1.5.7 1.7.8.2.1.4.2.5.3.1.2.1.9-.1 1.4z"/></svg>
+</a>
+
+<script>
+  const navToggle = document.getElementById('navToggle');
+  const nav = document.getElementById('nav');
+  navToggle.addEventListener('click', () => nav.classList.toggle('open'));
+  nav.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+</script>
+
+</body>
+</html>
