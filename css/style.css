@@ -353,7 +353,7 @@ footer{ padding:52px 0 36px; border-top:1px solid var(--line-soft); }
 @media (max-width:640px){
   .wrap{ padding:0 20px; }
   .nav{ padding:12px 0; }
-  .logo-mark-img{ height:500px; }
+  .logo-mark-img{ height:25px; }
   .logo-word{ display:none; }
   .nav-toggle{ display:block; }
 
