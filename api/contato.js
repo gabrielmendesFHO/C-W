@@ -1,13 +1,13 @@
-﻿import { Resend } from "resend";
+import { Resend } from "resend";
 
-// Configuração da Vercel para receber multipart/form-data (upload de arquivos)
+// ConfiguraÃ§Ã£o da Vercel para receber multipart/form-data (upload de arquivos)
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
-// Helper para ler o body bruto da requisição
+// Helper para ler o body bruto da requisiÃ§Ã£o
 function getRawBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
@@ -52,7 +52,7 @@ function parseMultipart(buffer, boundary) {
     const fieldName = nameMatch[1];
 
     if (fileMatch && fileMatch[1]) {
-      // É um arquivo
+      // Ã‰ um arquivo
       const filename = fileMatch[1];
       const contentTypeMatch = headerStr.match(/Content-Type:\s*(.+)/i);
       const contentType = contentTypeMatch
@@ -67,7 +67,7 @@ function parseMultipart(buffer, boundary) {
         };
       }
     } else {
-      // É um campo de texto
+      // Ã‰ um campo de texto
       fields[fieldName] = body.toString("utf8").trim();
     }
   }
@@ -86,14 +86,14 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Método não permitido" });
+    return res.status(405).json({ error: "MÃ©todo nÃ£o permitido" });
   }
 
   try {
     const contentType = req.headers["content-type"] || "";
     const boundaryMatch = contentType.match(/boundary=(.+)/);
     if (!boundaryMatch) {
-      return res.status(400).json({ error: "Content-Type inválido" });
+      return res.status(400).json({ error: "Content-Type invÃ¡lido" });
     }
 
     const boundary = boundaryMatch[1].trim();
@@ -102,30 +102,30 @@ export default async function handler(req, res) {
 
     const { nome, telefone, email, assunto, mensagem } = fields;
 
-    // Validação básica
+    // ValidaÃ§Ã£o bÃ¡sica
     if (!nome || !email || !mensagem) {
-      return res.status(400).json({ error: "Campos obrigatórios ausentes" });
+      return res.status(400).json({ error: "Campos obrigatÃ³rios ausentes" });
     }
 
     const assuntoLabel =
       assunto === "curriculo"
-        ? "Envio de Currículo"
+        ? "Envio de CurrÃ­culo"
         : assunto === "orcamento"
-        ? "Solicitar Orçamento"
-        : "Dúvidas Gerais";
+        ? "Solicitar OrÃ§amento"
+        : "DÃºvidas Gerais";
 
     // Monta o email
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const emailPayload = {
-      from: "C&W Segurança <onboarding@resend.dev>",
+      from: "C&W SeguranÃ§a <onboarding@resend.dev>",
       to: ["cwsegurancaprivada@gmail.com"],
       replyTo: email,
       subject: `[${assuntoLabel}] Contato de ${nome} pelo site`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f9f9; border-radius: 8px;">
           <div style="background: #1a1a1a; padding: 20px; border-radius: 6px 6px 0 0; text-align: center;">
-            <h1 style="color: #c9a84c; margin: 0; font-size: 22px;">C&amp;W Segurança</h1>
+            <h1 style="color: #c9a84c; margin: 0; font-size: 22px;">C&amp;W SeguranÃ§a</h1>
             <p style="color: #999; margin: 4px 0 0; font-size: 13px;">Nova mensagem via site</p>
           </div>
           <div style="background: #fff; padding: 24px; border-radius: 0 0 6px 6px; border: 1px solid #e0e0e0;">
@@ -144,7 +144,7 @@ export default async function handler(req, res) {
               </tr>
               <tr style="background: #f5f5f5;">
                 <td style="padding: 8px; font-weight: bold; color: #555;">Telefone:</td>
-                <td style="padding: 8px; color: #222;">${telefone || "Não informado"}</td>
+                <td style="padding: 8px; color: #222;">${telefone || "NÃ£o informado"}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold; color: #555; vertical-align: top;">Mensagem:</td>
@@ -153,18 +153,18 @@ export default async function handler(req, res) {
             </table>
             ${
               attachment
-                ? `<p style="margin-top: 16px; padding: 10px; background: #fff8e1; border-left: 3px solid #c9a84c; border-radius: 4px; font-size: 14px; color: #555;">📎 Arquivo anexado: <strong>${attachment.filename}</strong></p>`
+                ? `<p style="margin-top: 16px; padding: 10px; background: #fff8e1; border-left: 3px solid #c9a84c; border-radius: 4px; font-size: 14px; color: #555;">ðŸ“Ž Arquivo anexado: <strong>${attachment.filename}</strong></p>`
                 : ""
             }
           </div>
-          <p style="text-align: center; margin-top: 16px; font-size: 12px; color: #aaa;">Mensagem enviada pelo formulário de contato em <strong>cwseguranca.com.br</strong></p>
+          <p style="text-align: center; margin-top: 16px; font-size: 12px; color: #aaa;">Mensagem enviada pelo formulÃ¡rio de contato em <strong>cwseguranca.com.br</strong></p>
         </div>
       `,
       attachments: attachment
         ? [
             {
               filename: attachment.filename,
-              content: attachment.content,
+              content: attachment.content.toString("base64"),
             },
           ]
         : [],
