@@ -1,13 +1,11 @@
-import { Resend } from "resend";
+﻿import { Resend } from "resend";
 
-// ConfiguraÃ§Ã£o da Vercel para receber multipart/form-data (upload de arquivos)
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
-// Helper para ler o body bruto da requisiÃ§Ã£o
 function getRawBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
@@ -17,7 +15,6 @@ function getRawBody(req) {
   });
 }
 
-// Parser simples de multipart/form-data
 function parseMultipart(buffer, boundary) {
   const fields = {};
   let attachment = null;
@@ -26,25 +23,22 @@ function parseMultipart(buffer, boundary) {
   const parts = [];
   let start = 0;
 
-  // Encontra todas as partes
   while (true) {
     const idx = buffer.indexOf(boundaryBuf, start);
     if (idx === -1) break;
     const next = buffer.indexOf(boundaryBuf, idx + boundaryBuf.length);
     if (next === -1) break;
-    parts.push(buffer.slice(idx + boundaryBuf.length + 2, next - 2)); // remove \r\n
+    parts.push(buffer.slice(idx + boundaryBuf.length + 2, next - 2));
     start = next;
   }
 
   for (const part of parts) {
-    // Separa header do corpo
     const headerEnd = part.indexOf("\r\n\r\n");
     if (headerEnd === -1) continue;
 
     const headerStr = part.slice(0, headerEnd).toString("utf8");
     const body = part.slice(headerEnd + 4);
 
-    // Pega o nome do campo
     const nameMatch = headerStr.match(/name="([^"]+)"/);
     const fileMatch = headerStr.match(/filename="([^"]+)"/);
     if (!nameMatch) continue;
@@ -52,7 +46,6 @@ function parseMultipart(buffer, boundary) {
     const fieldName = nameMatch[1];
 
     if (fileMatch && fileMatch[1]) {
-      // Ã‰ um arquivo
       const filename = fileMatch[1];
       const contentTypeMatch = headerStr.match(/Content-Type:\s*(.+)/i);
       const contentType = contentTypeMatch
@@ -67,7 +60,6 @@ function parseMultipart(buffer, boundary) {
         };
       }
     } else {
-      // Ã‰ um campo de texto
       fields[fieldName] = body.toString("utf8").trim();
     }
   }
@@ -76,7 +68,6 @@ function parseMultipart(buffer, boundary) {
 }
 
 export default async function handler(req, res) {
-  // Permite CORS (caso precise)
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -86,14 +77,14 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "MÃ©todo nÃ£o permitido" });
+    return res.status(405).json({ error: "Metodo nao permitido" });
   }
 
   try {
     const contentType = req.headers["content-type"] || "";
     const boundaryMatch = contentType.match(/boundary=(.+)/);
     if (!boundaryMatch) {
-      return res.status(400).json({ error: "Content-Type invÃ¡lido" });
+      return res.status(400).json({ error: "Content-Type invalido" });
     }
 
     const boundary = boundaryMatch[1].trim();
@@ -102,30 +93,28 @@ export default async function handler(req, res) {
 
     const { nome, telefone, email, assunto, mensagem } = fields;
 
-    // ValidaÃ§Ã£o bÃ¡sica
     if (!nome || !email || !mensagem) {
-      return res.status(400).json({ error: "Campos obrigatÃ³rios ausentes" });
+      return res.status(400).json({ error: "Campos obrigatorios ausentes" });
     }
 
     const assuntoLabel =
       assunto === "curriculo"
-        ? "Envio de CurrÃ­culo"
+        ? "Envio de Curriculo"
         : assunto === "orcamento"
-        ? "Solicitar OrÃ§amento"
-        : "DÃºvidas Gerais";
+        ? "Solicitar Orcamento"
+        : "Duvidas Gerais";
 
-    // Monta o email
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const emailPayload = {
-      from: "C&W SeguranÃ§a <onboarding@resend.dev>",
-      to: ["cwsegurancaprivada@gmail.com"],
+      from: "C&W Seguranca <onboarding@resend.dev>",
+      to: ["cwseg.patrimonial@gmail.com"],
       replyTo: email,
       subject: `[${assuntoLabel}] Contato de ${nome} pelo site`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f9f9f9; border-radius: 8px;">
           <div style="background: #1a1a1a; padding: 20px; border-radius: 6px 6px 0 0; text-align: center;">
-            <h1 style="color: #c9a84c; margin: 0; font-size: 22px;">C&amp;W SeguranÃ§a</h1>
+            <h1 style="color: #c9a84c; margin: 0; font-size: 22px;">C&amp;W Seguranca</h1>
             <p style="color: #999; margin: 4px 0 0; font-size: 13px;">Nova mensagem via site</p>
           </div>
           <div style="background: #fff; padding: 24px; border-radius: 0 0 6px 6px; border: 1px solid #e0e0e0;">
@@ -144,7 +133,7 @@ export default async function handler(req, res) {
               </tr>
               <tr style="background: #f5f5f5;">
                 <td style="padding: 8px; font-weight: bold; color: #555;">Telefone:</td>
-                <td style="padding: 8px; color: #222;">${telefone || "NÃ£o informado"}</td>
+                <td style="padding: 8px; color: #222;">${telefone || "Nao informado"}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; font-weight: bold; color: #555; vertical-align: top;">Mensagem:</td>
@@ -153,11 +142,11 @@ export default async function handler(req, res) {
             </table>
             ${
               attachment
-                ? `<p style="margin-top: 16px; padding: 10px; background: #fff8e1; border-left: 3px solid #c9a84c; border-radius: 4px; font-size: 14px; color: #555;">ðŸ“Ž Arquivo anexado: <strong>${attachment.filename}</strong></p>`
+                ? `<p style="margin-top: 16px; padding: 10px; background: #fff8e1; border-left: 3px solid #c9a84c; border-radius: 4px; font-size: 14px; color: #555;">Anexo: <strong>${attachment.filename}</strong></p>`
                 : ""
             }
           </div>
-          <p style="text-align: center; margin-top: 16px; font-size: 12px; color: #aaa;">Mensagem enviada pelo formulÃ¡rio de contato em <strong>cwseguranca.com.br</strong></p>
+          <p style="text-align: center; margin-top: 16px; font-size: 12px; color: #aaa;">Mensagem enviada pelo formulario de contato em <strong>cwseguranca.com.br</strong></p>
         </div>
       `,
       attachments: attachment
