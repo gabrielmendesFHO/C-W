@@ -1,0 +1,7 @@
+﻿{
+  "functions": {
+    "api/contato.js": {
+      "maxDuration": 10
+    }
+  }
+}
