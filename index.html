@@ -459,6 +459,7 @@
               <textarea
                 id="msg"
                 name="mensagem"
+                required
                 placeholder="Conte um pouco sobre a sua necessidade ou descreva seu perfil profissional"
               ></textarea>
             </div>
@@ -581,7 +582,7 @@
             await showMessage({
               icon: 'error',
               title: 'Não foi possível enviar',
-              text: 'Tente novamente ou fale conosco pelo WhatsApp.',
+              text: json.error || 'Tente novamente ou fale conosco pelo WhatsApp.',
             });
             console.error(json);
           }
