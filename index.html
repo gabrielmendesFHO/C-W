@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <!-- Referência ao arquivo CSS externo -->
@@ -49,6 +49,17 @@
             >
           </div>
         </div>
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          type="button"
+          aria-pressed="false"
+          aria-label="Ativar modo azul noite"
+          title="Alternar modo de cor"
+        >
+          <span class="theme-toggle-icon" aria-hidden="true">◐</span>
+          <span class="theme-toggle-text">Azul noite</span>
+        </button>
         <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">
           <span></span>
         </button>
@@ -424,13 +435,6 @@
               <select
                 id="assunto"
                 name="assunto"
-                style="
-                  width: 100%;
-                  background: var(--bg-void);
-                  border: 1px solid var(--line-soft);
-                  color: var(--ink);
-                  padding: 12px 14px;
-                "
               >
                 <option value="orcamento">Solicitar Orçamento</option>
                 <option value="curriculo">Envio de Currículo</option>
