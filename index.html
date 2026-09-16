@@ -515,6 +515,7 @@
       </svg>
     </a>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Referência ao arquivo JavaScript externo -->
     <script src="js/script.js"></script>
     <!-- Script de envio do formulário via API -->
@@ -527,6 +528,33 @@
         btn.textContent = 'Enviando...';
         btn.disabled = true;
 
+        const showMessage = (options) => {
+          if (typeof Swal !== 'undefined') {
+            return Swal.fire({
+              confirmButtonText: 'Entendi',
+              confirmButtonColor: getComputedStyle(document.body).getPropertyValue('--accent').trim(),
+              background: getComputedStyle(document.body).getPropertyValue('--bg-panel').trim(),
+              color: getComputedStyle(document.body).getPropertyValue('--ink').trim(),
+              ...options,
+            });
+          }
+
+          alert(`${options.title}\n\n${options.text}`);
+          return Promise.resolve();
+        };
+
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            title: 'Enviando mensagem',
+            text: 'Aguarde só um instante.',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading(),
+            background: getComputedStyle(document.body).getPropertyValue('--bg-panel').trim(),
+            color: getComputedStyle(document.body).getPropertyValue('--ink').trim(),
+          });
+        }
+
         try {
           const formData = new FormData(this);
 
@@ -538,14 +566,32 @@
           const json = await res.json();
 
           if (res.ok && json.success) {
-            alert('✅ Mensagem enviada com sucesso! Entraremos em contato em breve.');
+            window.Swal?.close();
+            await showMessage({
+              icon: 'success',
+              title: 'Mensagem enviada!',
+              text: 'Recebemos seu contato e retornaremos em breve.',
+              timer: 3500,
+              timerProgressBar: true,
+              showConfirmButton: false,
+            });
             this.reset();
           } else {
-            alert('❌ Falha no envio. Por favor, tente pelo WhatsApp ou e-mail diretamente.');
+            window.Swal?.close();
+            await showMessage({
+              icon: 'error',
+              title: 'Não foi possível enviar',
+              text: 'Tente novamente ou fale conosco pelo WhatsApp.',
+            });
             console.error(json);
           }
         } catch (err) {
-          alert('❌ Erro de conexão. Verifique sua internet e tente novamente.');
+          window.Swal?.close();
+          await showMessage({
+            icon: 'error',
+            title: 'Erro de conexão',
+            text: 'Verifique sua internet e tente novamente.',
+          });
           console.error(err);
         } finally {
           btn.textContent = defaultText;
